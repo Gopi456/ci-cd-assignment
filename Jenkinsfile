@@ -5,7 +5,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/Gopi456/ci-cd-assignment.git'
+                git branch: 'main', url: 'https://github.com/Gopi456/ci-cd-assignment.git'
             }
         }
 
@@ -21,11 +21,5 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
-            }
-        }
     }
 }
