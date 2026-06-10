@@ -18,7 +18,8 @@ The solution was developed as part of a DevOps Engineer Internship Assignment.
 
 ## Architecture Diagram
 
-![CI/CD Architecture](docs/architecture-diagram.jpeg)
+<img width="334" height="1600" alt="WhatsApp Image 2026-06-10 at 12 56 47 PM" src="https://github.com/user-attachments/assets/0380a2c9-9571-4d88-8006-e179d6c2cd23" />
+
 
 ### Workflow
 
@@ -227,31 +228,39 @@ For production-grade implementation:
 
 ### Jenkins Build Success
 
-Insert screenshot here.
+<img width="1600" height="798" alt="WhatsApp Image 2026-06-10 at 11 40 54 AM" src="https://github.com/user-attachments/assets/8706174a-9b2d-4829-bfda-a2b3fee63e3c" />
+
+
+
 
 ---
 
 ### Jenkins Console Output
 
-Insert screenshot here.
+<img width="1600" height="855" alt="image" src="https://github.com/user-attachments/assets/7a17723e-c18f-4129-a8f0-852c73efe290" />
+
 
 ---
 
 ### Docker Build Output
 
-Insert screenshot here.
+<img width="1440" height="552" alt="image" src="https://github.com/user-attachments/assets/6d4fa579-2880-488a-b454-2673ce3d3f65" />
 
 ---
 
 ### Docker Images
 
-Insert screenshot here.
+<img width="478" height="88" alt="image" src="https://github.com/user-attachments/assets/bdf89730-1061-4f1e-b5fa-ef40e053adb3" />
+
 
 ---
 
 ### Kubernetes Cluster
 
-Insert screenshot here.
+<img width="1452" height="805" alt="image" src="https://github.com/user-attachments/assets/b17aaac7-d5e2-487f-bbb3-d31f45eaf476" />
+<img width="1345" height="540" alt="image" src="https://github.com/user-attachments/assets/f87d80a7-8946-4675-9e2a-554b9b05026f" />
+<img width="1600" height="819" alt="image" src="https://github.com/user-attachments/assets/2fd40732-f76c-4e60-be89-7253631b9b01" />
+
 
 ---
 
