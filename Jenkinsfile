@@ -17,17 +17,9 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker version'
                 sh 'docker build -t ci-cd-app .'
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh 'kubectl version --client'
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
-            }
-        }
     }
 }
