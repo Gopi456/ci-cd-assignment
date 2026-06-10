@@ -2,10 +2,9 @@ pipeline {
     agent any
 
     stages {
-
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Gopi456/ci-cd-assignment.git'
+                git 'https://github.com/Gopi456/ci-cd-assignment.git'
             }
         }
 
@@ -21,5 +20,10 @@ pipeline {
             }
         }
 
+        stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+            }
+        }
     }
 }
