@@ -266,7 +266,8 @@ For production-grade implementation:
 
 ### GitHub Repository
 
-Insert screenshot here.
+<img width="959" height="466" alt="image" src="https://github.com/user-attachments/assets/2afa4c86-8f76-41e6-b58f-b9ffe4bb39b9" />
+
 
 ---
 
