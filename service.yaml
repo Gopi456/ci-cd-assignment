@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: ci-cd-service
 spec:
+  type: NodePort
   selector:
     app: ci-cd-app
-  type: NodePort
   ports:
-  - port: 81
+  - port: 80
     targetPort: 8081
+    nodePort: 30081
