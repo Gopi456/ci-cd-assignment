@@ -5,20 +5,19 @@ pipeline {
         DOCKER_IMAGE = "gopireddy456/ci-cd-app:latest"
     }
 
-    triggers {
-        pollSCM('H/2 * * * *')
-    }
-
     stages {
+
         stage('Checkout') {
             steps {
-                git 'https://github.com/Gopi456/ci-cd-assignment.git'
+                git branch: 'main', url: 'https://github.com/Gopi456/ci-cd-assignment.git'
             }
         }
 
         stage('Build Maven App') {
             steps {
-                sh 'cd demo && mvn clean package -DskipTests'
+                dir('demo') {
+                    sh 'mvn clean package -DskipTests'
+                }
             }
         }
 
