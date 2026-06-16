@@ -21,13 +21,10 @@ stages {
 
 
 stage('Checkout'){
-
-steps{
-
-git 'https://github.com/Gopi456/ci-cd-assignment.git'
-
-}
-
+    steps{
+        git branch: 'main',
+            url: 'https://github.com/Gopi456/ci-cd-assignment.git'
+    }
 }
 
 
