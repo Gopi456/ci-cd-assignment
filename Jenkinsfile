@@ -48,39 +48,35 @@ pipeline {
 
        stage('Deploy AKS') {
 
-steps {
+    steps {
 
-withCredentials([
-usernamePassword(
-credentialsId: 'azure-sp',
-usernameVariable: 'AZURE_CLIENT_ID',
-passwordVariable: 'AZURE_CLIENT_SECRET'
-)
-]) {
+        withCredentials([
+            file(credentialsId: 'azure-sp', variable: 'AZURE_AUTH')
+        ]) {
 
-sh '''
+            sh '''
 
-az login --service-principal \
--u $AZURE_CLIENT_ID \
--p $AZURE_CLIENT_SECRET \
---tenant 6214e402-d807-4ce5-a2b2-ad0919322c81
+            az login --service-principal \
+            --username $(jq -r .clientId $AZURE_AUTH) \
+            --password $(jq -r .clientSecret $AZURE_AUTH) \
+            --tenant $(jq -r .tenantId $AZURE_AUTH)
 
 
-az aks get-credentials \
---resource-group cicd-demo-rg \
---name cicd-aks \
---overwrite-existing
+            az aks get-credentials \
+            --resource-group cicd-demo-rg \
+            --name cicd-aks \
+            --overwrite-existing
 
 
-kubectl apply -f deployment.yaml
+            kubectl apply -f deployment.yaml
 
-kubectl apply -f service.yaml
+            kubectl apply -f service.yaml
 
-'''
+            '''
 
-}
+        }
 
-}
+    }
 
 }
         stage('Verify') {
