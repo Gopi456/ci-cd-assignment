@@ -46,18 +46,43 @@ pipeline {
             }
         }
 
-        stage('Deploy AKS') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh '''
-                        export KUBECONFIG=$KUBECONFIG
-                        kubectl apply -f deployment.yaml
-                        kubectl apply -f service.yaml
-                    '''
-                }
-            }
-        }
+       stage('Deploy AKS') {
 
+steps {
+
+withCredentials([
+usernamePassword(
+credentialsId: 'azure-sp',
+usernameVariable: 'AZURE_CLIENT_ID',
+passwordVariable: 'AZURE_CLIENT_SECRET'
+)
+]) {
+
+sh '''
+
+az login --service-principal \
+-u $AZURE_CLIENT_ID \
+-p $AZURE_CLIENT_SECRET \
+--tenant 6214e402-d807-4ce5-a2b2-ad0919322c81
+
+
+az aks get-credentials \
+--resource-group cicd-demo-rg \
+--name cicd-aks \
+--overwrite-existing
+
+
+kubectl apply -f deployment.yaml
+
+kubectl apply -f service.yaml
+
+'''
+
+}
+
+}
+
+}
         stage('Verify') {
             steps {
                 sh '''
