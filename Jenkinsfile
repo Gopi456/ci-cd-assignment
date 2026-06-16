@@ -46,20 +46,20 @@ pipeline {
             }
         }
 
-       stage('Deploy AKS') {
+    stage('Deploy AKS') {
 
     steps {
 
         withCredentials([
-            file(credentialsId: 'azure-sp', variable: 'AZURE_AUTH')
+            file(credentialsId: 'azure-sp', variable: 'AZURE_SP')
         ]) {
 
             sh '''
-
+            
             az login --service-principal \
-            --username $(jq -r .clientId $AZURE_AUTH) \
-            --password $(jq -r .clientSecret $AZURE_AUTH) \
-            --tenant $(jq -r .tenantId $AZURE_AUTH)
+            -u $(cat $AZURE_SP | jq -r .clientId) \
+            -p $(cat $AZURE_SP | jq -r .clientSecret) \
+            --tenant $(cat $AZURE_SP | jq -r .tenantId)
 
 
             az aks get-credentials \
@@ -70,14 +70,10 @@ pipeline {
 
             kubectl apply -f deployment.yaml
 
-            kubectl apply -f service.yaml
-
             '''
 
         }
-
     }
-
 }
         stage('Verify') {
             steps {
