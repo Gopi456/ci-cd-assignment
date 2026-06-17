@@ -1,58 +1,109 @@
-# CI/CD Pipeline Setup using Git, Jenkins, Docker and Kubernetes
+# CI/CD Pipeline Implementation using GitHub, Jenkins, Docker and Kubernetes (AKS)
 
 ## Overview
 
-This project demonstrates the implementation of a Continuous Integration and Continuous Deployment (CI/CD) pipeline using GitHub, Jenkins, Maven, Docker, and Kubernetes (Minikube).
+This project demonstrates an end-to-end Continuous Integration and Continuous Deployment (CI/CD) pipeline implementation using GitHub, Jenkins, Maven, Docker, Docker Hub, and Azure Kubernetes Service (AKS).
 
-The pipeline automatically performs:
+The main objective of this project is to automate the software delivery process by automatically building, packaging, containerizing, and deploying a Spring Boot application into a Kubernetes cluster whenever code changes are pushed to GitHub.
 
-* Source code checkout from GitHub
-* Maven build execution
-* Spring Boot artifact generation
-* Docker image creation
-* Kubernetes deployment preparation
-
-The solution was developed as part of a DevOps Engineer Internship Assignment.
+This project was developed as part of the DevOps Engineer Internship Assignment.
 
 ---
 
-## Architecture Diagram
-
-<img width="334" height="1600" alt="WhatsApp Image 2026-06-10 at 12 56 47 PM" src="https://github.com/user-attachments/assets/0380a2c9-9571-4d88-8006-e179d6c2cd23" />
+# Architecture Diagram
 
 
-### Workflow
+                 Developer
+                    |
+                    |
+              Git Push / Commit
+                    |
+                    |
+              GitHub Repository
+                    |
+                    |
+        GitHub Webhook Trigger
+                    |
+                    |
+              Jenkins Server
+                    |
+                    |
+          Jenkins Declarative Pipeline
+                    |
+     -----------------------------------
+     |                |                |
+     |                |                |
+ Maven Build     Docker Build     Docker Push
+     |                |                |
+     |                |                |
+ Spring Boot      Container       Docker Hub
+ Artifact         Image              |
+                                      |
+                                      |
+                              Kubernetes Deployment
+                                      |
+                                      |
+                                Azure AKS Cluster
+                                      |
+                          -----------------------
+                          |                     |
+                       Pod 1                 Pod 2
+                          |
+                          |
+                    Kubernetes Service
+                          |
+                          |
+                  Application Access
 
-1. Developer pushes code to GitHub.
-2. Jenkins automatically triggers the pipeline.
-3. Jenkins checks out source code.
-4. Maven builds the application.
-5. Docker creates a container image.
-6. Docker image becomes available for deployment.
-7. Kubernetes (Minikube) deploys the application.
-8. Application becomes accessible through Kubernetes Service.
 
 ---
 
-## Technology Stack
+# CI/CD Workflow
 
-| Component         | Technology            |
-| ----------------- | --------------------- |
-| Version Control   | Git, GitHub           |
-| CI/CD Tool        | Jenkins               |
-| Build Tool        | Maven                 |
-| Language          | Java 17               |
-| Framework         | Spring Boot           |
-| Containerization  | Docker                |
-| Orchestration     | Kubernetes (Minikube) |
-| Pipeline Language | Groovy                |
-| IDE               | VS Code               |
+1. Developer writes application code.
+
+2. Code changes are pushed to GitHub repository.
+
+3. GitHub Webhook sends an event notification to Jenkins.
+
+4. Jenkins automatically starts the pipeline.
+
+5. Jenkins checks out the latest source code.
+
+6. Maven builds the Spring Boot application.
+
+7. Jenkins creates a Docker image.
+
+8. Docker image is pushed to Docker Hub.
+
+9. Jenkins deploys the application into Azure Kubernetes Service (AKS).
+
+10. Kubernetes creates pods and exposes the application using Kubernetes Service.
+
+11. Application availability is verified.
 
 ---
 
-## Repository Structure
+# Technology Stack
 
-```text
+| Component | Technology |
+|---|---|
+| Version Control | Git, GitHub |
+| CI/CD Tool | Jenkins |
+| Pipeline Script | Groovy |
+| Build Tool | Maven |
+| Programming Language | Java 17 |
+| Framework | Spring Boot |
+| Containerization | Docker |
+| Container Registry | Docker Hub |
+| Container Orchestration | Kubernetes |
+| Cloud Platform | Microsoft Azure AKS |
+| IDE | VS Code |
+
+---
+
+# Repository Structure
+
 CI-CD-Assignment/
 │
 ├── demo/
@@ -111,34 +162,116 @@ kubectl apply -f deployment.yaml
 
 ## Jenkinsfile
 
-```groovy
-pipeline {
-    agent any
-
-    stages {
-
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Gopi456/ci-cd-assignment.git'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'cd demo && mvn clean package -DskipTests'
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t ci-cd-app .'
-            }
-        }
-    }
-}
-```
 
 ---
+
+# Jenkinsfile
+
+```groovy
+pipeline {
+
+agent any
+
+
+stages {
+
+
+stage('Checkout') {
+
+steps {
+
+git branch: 'main',
+url: 'https://github.com/Gopi456/ci-cd-assignment.git'
+
+}
+
+}
+
+
+stage('Build Maven App') {
+
+steps {
+
+sh '''
+
+cd demo
+
+mvn clean package -DskipTests
+
+'''
+
+}
+
+}
+
+
+stage('Docker Build') {
+
+steps {
+
+sh '''
+
+docker build -t gopireddy456/ci-cd-app:latest .
+
+'''
+
+}
+
+}
+
+
+stage('Push Docker Image') {
+
+steps {
+
+sh '''
+
+docker push gopireddy456/ci-cd-app:latest
+
+'''
+
+}
+
+}
+
+
+stage('Deploy AKS') {
+
+steps {
+
+sh '''
+
+kubectl apply -f deployment.yaml
+
+kubectl apply -f service.yaml
+
+'''
+
+}
+
+}
+
+
+stage('Verify Deployment') {
+
+steps {
+
+sh '''
+
+kubectl get pods
+
+kubectl get svc
+
+'''
+
+}
+
+}
+
+
+}
+
+}
 
 ## Docker Build Verification
 
@@ -185,19 +318,58 @@ deployment.apps/ci-cd-app configured
 ```
 
 ---
+## Validation result
 
-## Build Validation
+| Validation                 | Status |
+| -------------------------- | ------ |
+| GitHub Integration         | Passed |
+| GitHub Webhook Trigger     | Passed |
+| Jenkins Pipeline Execution | Passed |
+| Maven Build                | Passed |
+| JAR Generation             | Passed |
+| Docker Image Creation      | Passed |
+| Docker Hub Push            | Passed |
+| AKS Deployment             | Passed |
+| Kubernetes Verification    | Passed |
+| Application Testing        | Passed |
 
-| Validation Item                 | Status |
-| ------------------------------- | ------ |
-| GitHub Checkout                 | Passed |
-| Maven Build                     | Passed |
-| JAR Creation                    | Passed |
-| Docker Image Build              | Passed |
-| Jenkins Pipeline Execution      | Passed |
-| Kubernetes Cluster Verification | Passed |
-| Deployment Manifest Validation  | Passed |
+---
 
+##  Final Pipeline Flow 
+
+GitHub Commit
+
+      ↓
+
+Webhook Trigger
+
+      ↓
+
+Jenkins Pipeline
+
+      ↓
+
+Maven Build
+
+      ↓
+
+Docker Image Build
+
+      ↓
+
+Docker Hub Push
+
+      ↓
+
+AKS Kubernetes Deployment
+
+      ↓
+
+Pod Verification
+
+      ↓
+
+Application Running
 ---
 
 ## Security Considerations
@@ -237,7 +409,11 @@ For production-grade implementation:
 
 ### Jenkins Console Output
 
-<img width="1600" height="855" alt="image" src="https://github.com/user-attachments/assets/7a17723e-c18f-4129-a8f0-852c73efe290" />
+
+<img width="959" height="482" alt="image" src="https://github.com/user-attachments/assets/473f8feb-c309-4ab2-9a92-ec7b1687e6d4" />
+<img width="959" height="446" alt="image" src="https://github.com/user-attachments/assets/9ecf40c7-df2a-4910-8fa9-cab3464f4a23" />
+
+
 
 
 ---
@@ -268,19 +444,30 @@ For production-grade implementation:
 
 <img width="959" height="466" alt="image" src="https://github.com/user-attachments/assets/2afa4c86-8f76-41e6-b58f-b9ffe4bb39b9" />
 
+## Cloud-Azure 
+<img width="959" height="442" alt="image" src="https://github.com/user-attachments/assets/34e86ea7-4c45-4e2c-aae6-b83a8ebb0a92" />
+
+## Verification
+<img width="959" height="484" alt="image" src="https://github.com/user-attachments/assets/2a1e557e-07c4-4de1-b83b-c40edd14dfb8" />
+
+
 
 ---
 
-## Project Outcome
+Project Outcome
 
-Successfully implemented a CI/CD pipeline that:
+Successfully implemented a complete CI/CD automation workflow.
 
-* Automates application build process.
-* Generates deployable artifacts.
-* Creates Docker images automatically.
-* Integrates GitHub with Jenkins.
-* Supports Kubernetes deployment workflows.
-* Demonstrates DevOps automation using industry-standard tools.
+The project achieved:
+
+Automated GitHub to Jenkins integration.
+Automated application build process.
+Automated Docker image creation.
+Automated Docker Hub image publishing.
+Automated Kubernetes deployment.
+Reduced manual deployment effort.
+Demonstrated real-world DevOps practices.
+
 
 ---
 
@@ -301,5 +488,3 @@ B.Tech – Computer Science & Engineering (AI & ML)
 DevOps & Cloud Enthusiast
 
 GitHub: https://github.com/Gopi456
-
-CI/CD Webhook testing
